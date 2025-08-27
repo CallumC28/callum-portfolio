@@ -58,9 +58,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth">
-      <header>
-        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-      </header>
       <body className={`${inter.className} min-h-screen bg-black text-white mesh-bg`}>
         <ScrollProgress />
         <Header />
