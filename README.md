@@ -50,4 +50,4 @@ It showcases my skills, projects, education, and experience in **AI/ML** and **W
 npm run dev
 ```
 
-![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=CallumC28&layout=compact)
+---
