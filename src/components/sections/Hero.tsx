@@ -92,15 +92,6 @@ export const Hero: React.FC = () => {
             >
               Get In Touch
             </Button>
-            
-            <Button
-              variant="ghost"
-              size="lg"
-              icon={<Download size={20} />}
-              onClick={() => window.open('/Callum Cummins CV.pdf', '_blank')}
-            >
-              Download CV
-            </Button>
           </motion.div>
 
           {/* Social Links */}
