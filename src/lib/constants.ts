@@ -107,7 +107,7 @@ export const PROJECTS = [
     github: 'https://github.com/CallumC28/Phishing-Email-Detector-In-Progress',
     live: '',
     image: '/project-screenshots/phishing-detector.png',
-    category: 'AI/ML',
+    category: ['AI/ML', 'Data Analysis']
   },
   {
     id: 3,
@@ -199,7 +199,14 @@ export const EDUCATION = [
     degree: 'Level 3 Extended Diploma in IT',
     grade: 'Merit, Merit, Distinction (MMD)',
     period: 'Sep 2019 - July 2021',
-    modules: [],
+    modules: [
+      'Computer Systems',
+      'Computer Networks',
+      'Cyber Security',
+      '3D Animation',
+      'Game Design',
+      'IT Project Management',
+    ],
   },
 ] as const
 
@@ -208,25 +215,25 @@ export const CERTIFICATES = [
     name: 'Exploring Artificial Intelligence: Use Cases and Applications',
     issuer: 'AWS Training & Certification',
     date: 'Aug 2025',
-    credential: '#',
+    credential: '/certificates/AI_Use_Cases_Applications_Cert.pdf',
   },
   {
     name: 'Getting Started with Natural Language Processing',
     issuer: 'Codecademy',
     date: 'Aug 2025',
-    credential: '#',
+    credential: '/certificates/NLP_Intro_Cert _ Codecademy.pdf',
   },
   {
     name: 'Learn Prompt Engineering',
     issuer: 'Codecademy',
     date: 'Aug 2025',
-    credential: '#',
+    credential:'/certificates/Promp_Engineering_Cert _ Codecademy.pdf',
   },
   {
     name: 'Python (Basic)',
     issuer: 'HackerRank',
     date: 'Aug 2025',
-    credential: '#',
+    credential: 'https://www.hackerrank.com/certificates/iframe/cd753798aed8',
   },
 ] as const
 

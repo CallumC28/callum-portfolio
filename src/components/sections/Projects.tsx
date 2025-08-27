@@ -9,11 +9,11 @@ import { Button } from '@/components/ui/Button'
 import { FadeInView } from '@/components/animations/FadeInView'
 import { PROJECTS } from '@/lib/constants'
 
-// Derive types from your actual data so TS understands readonly tuples, etc.
+// Derive types from actual data so TS understands readonly tuples and so on
 type Project = (typeof PROJECTS)[number]
-type Category = 'AI/ML' | 'Web Development'
+type Category = 'AI/ML' | 'Web Development' | 'Data Analysis'
 
-// Normalize category to a readonly array of Category
+// Normalise category to a readonly array of Category
 const catsOf = (c: Project['category']): readonly Category[] =>
   (Array.isArray(c) ? c : [c]) as readonly Category[]
 
@@ -37,6 +37,11 @@ export const Projects: React.FC = () => {
       label: 'Web Dev',
       count: PROJECTS.filter((p) => catsOf(p.category).includes('Web Development')).length,
     },
+    {
+      name: 'Data Analysis' as const,
+      label: 'Data Analysis',
+      count: PROJECTS.filter((p) => catsOf(p.category).includes('Data Analysis')).length,
+    },
   ] as const
 
   return (
@@ -58,7 +63,7 @@ export const Projects: React.FC = () => {
             </h2>
 
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              A showcase of innovative solutions combining AI, web development, and user-centered design.
+              A showcase of personal projects and coursework combining AI, web development, and user-centered design.
             </p>
           </div>
         </FadeInView>
@@ -262,7 +267,7 @@ export const Projects: React.FC = () => {
           </motion.div>
         </AnimatePresence>
 
-        {/* GitHub CTA */}
+        {/* GitHub */}
         <FadeInView>
           <div className="mt-16 text-center">
             <Card className="inline-block bg-gradient-to-r from-primary-500/10 to-secondary-500/10 border-primary-500/20">

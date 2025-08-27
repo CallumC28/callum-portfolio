@@ -206,6 +206,16 @@ export const About: React.FC = () => {
                       <div>
                         <h4 className="text-white font-medium text-sm">{cert.name}</h4>
                         <p className="text-gray-400 text-xs">{cert.issuer}</p>
+                        {cert.credential && (
+                          <a
+                            href={cert.credential}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-primary-400 text-xs hover:underline inline-flex items-center gap-1 mt-1"
+                          >
+                            View Credential
+                          </a>
+                        )}
                       </div>
                       <Badge variant="secondary" size="sm">{cert.date}</Badge>
                     </motion.div>

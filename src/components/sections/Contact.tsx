@@ -25,10 +25,6 @@ export const Contact: React.FC = () => {
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
               <span className="gradient-text">Get In Touch</span>
             </h2>
-            
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Ready to collaborate on your next project? Let's discuss how we can build something amazing together.
-            </p>
           </div>
         </FadeInView>
 
@@ -40,8 +36,7 @@ export const Contact: React.FC = () => {
                 <h3 className="text-2xl font-bold text-white mb-6">Let's Connect</h3>
                 <p className="text-gray-300 leading-relaxed mb-8">
                   I'm always interested in discussing new opportunities, innovative projects, 
-                  and potential collaborations. Whether you're looking for an AI engineer, 
-                  full-stack developer, or just want to chat about technology, I'd love to hear from you.
+                  and potential collaborations. I'd love to hear from you.
                 </p>
               </div>
 
@@ -84,7 +79,7 @@ export const Contact: React.FC = () => {
                     <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" />
                     <div>
                       <p className="font-semibold text-white">Available for opportunities</p>
-                      <p className="text-sm text-gray-400">Open to full-time positions and exciting projects</p>
+                      <p className="text-sm text-gray-400">Open to full-time positions</p>
                     </div>
                   </div>
                 </CardContent>
