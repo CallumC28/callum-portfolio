@@ -8,14 +8,14 @@ import { ScrollProgress } from "@/components/animations/ScrollProgress";
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Callum Cummins - AI Engineer & Full Stack Developer',
-  description: 'Computer Science graduate specializing in AI/ML, web development, and data analysis. Experienced in Python, JavaScript, React, and machine learning technologies.',
+  title: 'Callum Cummins - Graduate',
+  description: 'Recent Computer Science graduate specialising in AI/ML, web development, and data analysis. Experienced in Python, JavaScript, React, and machine learning technologies.',
   keywords: 'AI Engineer, Machine Learning, Full Stack Developer, Python, JavaScript, React, Data Analysis, Computer Science',
   authors: [{ name: 'Callum Cummins' }],
   creator: 'Callum Cummins',
   openGraph: {
     title: 'Callum Cummins - AI Engineer & Full Stack Developer',
-    description: 'Computer Science graduate specializing in AI/ML, web development, and data analysis.',
+    description: 'Computer Science graduate specialising in AI/ML, web development, and data analysis.',
     url: 'https://callumcummins.dev',
     siteName: 'Callum Cummins Portfolio',
     images: [
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Callum Cummins - AI Engineer & Full Stack Developer',
-    description: 'Computer Science graduate specializing in AI/ML, web development, and data analysis.',
+    description: 'Computer Science graduate specialising in AI/ML, web development, and data analysis.',
     images: ['/profile.jpg'],
   },
   robots: {

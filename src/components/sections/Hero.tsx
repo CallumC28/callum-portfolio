@@ -12,7 +12,6 @@ export const Hero: React.FC = () => {
   const titles = [
     'AI Engineer',
     'Full Stack Developer',
-    'Machine Learning Engineer',
     'Data Analyst',
   ]
 

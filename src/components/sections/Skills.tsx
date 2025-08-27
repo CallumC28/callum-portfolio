@@ -182,9 +182,9 @@ export const Skills: React.FC = () => {
                             {activeCategory === 'AI & Machine Learning' && 
                               "I’ve built predictive models with PyTorch, BERT, and scikit-learn, applying them to real-world problems like phishing detection and workout progression tracking."}
                             {activeCategory === 'Web Development' && 
-                              "I design responsive, performant applications using React, Next.js, and Tailwind, often integrating APIs and visualizations with Chart.js."}
+                              "I design responsive, performant applications using React, Next.js, and Tailwind, often integrating APIs and visualisations with Chart.js."}
                             {activeCategory === 'Cloud & Tools' && 
-                              "I deploy projects to AWS, GCP, and Vercel, manage databases, and follow Agile workflows with Git and Docker for collaboration and scalability."}
+                              "I deploy projects to Vercel, manage databases, and follow Agile workflows with Git for collaboration and scalability."}
                           </p>
                         </div>
                       </div>

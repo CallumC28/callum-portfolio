@@ -9,18 +9,35 @@ import { Button } from '@/components/ui/Button'
 import { FadeInView } from '@/components/animations/FadeInView'
 import { PROJECTS } from '@/lib/constants'
 
+// Derive types from your actual data so TS understands readonly tuples, etc.
+type Project = (typeof PROJECTS)[number]
+type Category = 'AI/ML' | 'Web Development'
+
+// Normalize category to a readonly array of Category
+const catsOf = (c: Project['category']): readonly Category[] =>
+  (Array.isArray(c) ? c : [c]) as readonly Category[]
+
 export const Projects: React.FC = () => {
-  const [filter, setFilter] = useState<'all' | 'AI/ML' | 'Web Development'>('all')
-  
-  const filteredProjects = filter === 'all' 
-    ? PROJECTS 
-    : PROJECTS.filter(project => project.category === filter)
+  const [filter, setFilter] = useState<'all' | Category>('all')
+
+  const filteredProjects =
+    filter === 'all'
+      ? PROJECTS
+      : PROJECTS.filter((p) => catsOf(p.category).includes(filter))
 
   const categories = [
-    { name: 'all', label: 'All Projects', count: PROJECTS.length },
-    { name: 'AI/ML', label: 'AI/ML', count: PROJECTS.filter(p => p.category === 'AI/ML').length },
-    { name: 'Web Development', label: 'Web Dev', count: PROJECTS.filter(p => p.category === 'Web Development').length }
-  ]
+    { name: 'all' as const, label: 'All Projects', count: PROJECTS.length },
+    {
+      name: 'AI/ML' as const,
+      label: 'AI/ML',
+      count: PROJECTS.filter((p) => catsOf(p.category).includes('AI/ML')).length,
+    },
+    {
+      name: 'Web Development' as const,
+      label: 'Web Dev',
+      count: PROJECTS.filter((p) => catsOf(p.category).includes('Web Development')).length,
+    },
+  ] as const
 
   return (
     <section id="projects" className="py-20 relative">
@@ -35,11 +52,11 @@ export const Projects: React.FC = () => {
             >
               <Folder className="w-8 h-8 text-accent-400" />
             </motion.div>
-            
+
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
               <span className="gradient-text">Featured Projects</span>
             </h2>
-            
+
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
               A showcase of innovative solutions combining AI, web development, and user-centered design.
             </p>
@@ -52,7 +69,7 @@ export const Projects: React.FC = () => {
             {categories.map((category) => (
               <motion.button
                 key={category.name}
-                onClick={() => setFilter(category.name as any)}
+                onClick={() => setFilter(category.name)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className={`px-6 py-3 rounded-full transition-all duration-300 ${
@@ -83,151 +100,165 @@ export const Projects: React.FC = () => {
             transition={{ duration: 0.3 }}
             className="grid grid-cols-1 md:grid-cols-2 gap-8"
           >
-            {filteredProjects.map((project, index) => (
-              <motion.div
-                key={project.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-              >
-                <Card className="h-full group hover:border-primary-500/50 transition-all duration-300">
-                  {/* Project Image */}
-                  <div className="relative overflow-hidden rounded-t-xl">
-                    <div className="relative h-56 md:h-64 bg-gradient-to-br from-gray-800 to-gray-900">
-                      {project.image ? (
-                        <img
-                          src={project.image}
-                          alt={project.title}
-                          // pin to the slot + fill it
-                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                          onError={(e) => {
-                            // fallback to initials if the file is missing
-                            const target = e.currentTarget
-                            target.style.display = 'none'
-                            const fb = target.parentElement?.querySelector('.fallback')
-                            fb && fb.classList.remove('hidden')
-                          }}
-                        />
-                      ) : null}
+            {filteredProjects.map((project, index) => {
+              const cats = catsOf(project.category)
+              const isAI = cats.includes('AI/ML')
 
-                      {/* Fallback initials (hidden when image loads) */}
-                      <div className="fallback absolute inset-0 hidden items-center justify-center text-4xl font-bold text-gray-600">
-                        {project.title.split(' ').map(w => w[0]).join('').slice(0, 3)}
-                      </div>
+              return (
+                <motion.div
+                  key={project.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                >
+                  <Card className="h-full group hover:border-primary-500/50 transition-all duration-300">
+                    {/* Project Image */}
+                    <div className="relative overflow-hidden rounded-t-xl">
+                      <div className="relative h-56 md:h-64 bg-gradient-to-br from-gray-800 to-gray-900">
+                        {project.image ? (
+                          <img
+                            src={project.image}
+                            alt={project.title}
+                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            onError={(e) => {
+                              // fallback to initials if the file is missing
+                              const target = e.currentTarget
+                              target.style.display = 'none'
+                              const fb = target.parentElement?.querySelector('.fallback')
+                              fb && fb.classList.remove('hidden')
+                            }}
+                          />
+                        ) : null}
 
-                      {/* Overlay */}
-                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                        <div className="flex space-x-4">
-                          {project.github && (
-                            <Button
-                              size="sm"
-                              icon={<Github size={16} />}
-                              onClick={() => window.open(project.github, '_blank')}
+                        {/* Fallback initials (hidden until image error) */}
+                        <div className="fallback absolute inset-0 hidden items-center justify-center text-4xl font-bold text-gray-600">
+                          {project.title
+                            .split(' ')
+                            .map((w) => w[0])
+                            .join('')
+                            .slice(0, 3)}
+                        </div>
+
+                        {/* Overlay */}
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                          <div className="flex space-x-4">
+                            {project.github && (
+                              <Button
+                                size="sm"
+                                icon={<Github size={16} />}
+                                onClick={() => window.open(project.github, '_blank')}
+                              >
+                                Code
+                              </Button>
+                            )}
+                            {project.live && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                icon={<ExternalLink size={16} />}
+                                onClick={() => window.open(project.live, '_blank')}
+                              >
+                                Demo
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Category Badges (support multiple) */}
+                        <div className="absolute top-4 right-4 flex gap-2">
+                          {cats.map((cat) => (
+                            <Badge
+                              key={cat}
+                              variant={cat === 'AI/ML' ? 'secondary' : 'primary'}
+                              className="backdrop-blur-md"
                             >
-                              Code
-                            </Button>
-                          )}
-                          {project.live && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              icon={<ExternalLink size={16} />}
-                              onClick={() => window.open(project.live, '_blank')}
-                            >
-                              Demo
-                            </Button>
-                          )}
+                              {cat}
+                            </Badge>
+                          ))}
                         </div>
                       </div>
-
-                      {/* Category Badge */}
-                      <div className="absolute top-4 right-4">
-                        <Badge variant={project.category === 'AI/ML' ? 'secondary' : 'primary'} className="backdrop-blur-md">
-                          {project.category}
-                        </Badge>
-                      </div>
                     </div>
-                  </div>
 
+                    <CardHeader>
+                      <div className="flex justify-between items-start mb-2">
+                        <CardTitle className="text-xl group-hover:text-primary-400 transition-colors">
+                          {project.title}
+                        </CardTitle>
 
-                  <CardHeader>
-                    <div className="flex justify-between items-start mb-2">
-                      <CardTitle className="text-xl group-hover:text-primary-400 transition-colors">
-                        {project.title}
-                      </CardTitle>
-                      {project.category === 'AI/ML' && (
-                        <div className="flex items-center text-secondary-400">
-                          <TrendingUp size={16} />
-                          <Star size={14} className="ml-1" />
-                        </div>
-                      )}
-                    </div>
-                    
-                    <p className="text-gray-400 text-sm leading-relaxed">
-                      {project.description}
-                    </p>
-                  </CardHeader>
-
-                  <CardContent>
-                    {/* Technologies */}
-                    <div className="mb-4">
-                      <h4 className="text-sm font-semibold text-white mb-2">Tech Stack</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {project.technologies.slice(0, 6).map((tech) => (
-                          <Badge key={tech} variant="outline" size="sm">
-                            {tech}
-                          </Badge>
-                        ))}
-                        {project.technologies.length > 6 && (
-                          <Badge variant="outline" size="sm">
-                            +{project.technologies.length - 6} more
-                          </Badge>
+                        {isAI && (
+                          <div className="flex items-center text-secondary-400">
+                            <TrendingUp size={16} />
+                            <Star size={14} className="ml-1" />
+                          </div>
                         )}
                       </div>
-                    </div>
 
-                    {/* Key Features */}
-                    <div>
-                      <h4 className="text-sm font-semibold text-white mb-2">Key Features</h4>
-                      <ul className="space-y-1">
-                        {project.features.slice(0, 5).map((feature, idx) => (
-                          <li key={idx} className="text-xs text-gray-400 flex items-start">
-                            <span className="text-primary-400 mr-2">•</span>
-                            {feature}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </CardContent>
+                      <p className="text-gray-400 text-sm leading-relaxed">
+                        {project.description}
+                      </p>
+                    </CardHeader>
 
-                <CardFooter>
-                  <div className="flex space-x-3 w-full">
-                    {project.github && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1"
-                        icon={<Github size={16} />}
-                        onClick={() => window.open(project.github, '_blank')}
-                      >
-                        View Code
-                      </Button>
-                    )}
-                    {project.live && (
-                      <Button
-                        size="sm"
-                        className="flex-1"
-                        icon={<ExternalLink size={16} />}
-                        onClick={() => window.open(project.live, '_blank')}
-                      >
-                        Live Demo
-                      </Button>
-                    )}
-                  </div>
-                </CardFooter>
-                </Card>
-              </motion.div>
-            ))}
+                    <CardContent>
+                      {/* Technologies */}
+                      <div className="mb-4">
+                        <h4 className="text-sm font-semibold text-white mb-2">Tech Stack</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {project.technologies.slice(0, 6).map((tech) => (
+                            <Badge key={tech} variant="outline" size="sm">
+                              {tech}
+                            </Badge>
+                          ))}
+                          {project.technologies.length > 6 && (
+                            <Badge variant="outline" size="sm">
+                              +{project.technologies.length - 6} more
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Key Features */}
+                      <div>
+                        <h4 className="text-sm font-semibold text-white mb-2">Key Features</h4>
+                        <ul className="space-y-1">
+                          {project.features.slice(0, 5).map((feature, idx) => (
+                            <li key={idx} className="text-xs text-gray-400 flex items-start">
+                              <span className="text-primary-400 mr-2">•</span>
+                              {feature}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </CardContent>
+
+                    <CardFooter>
+                      <div className="flex space-x-3 w-full">
+                        {project.github && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex-1"
+                            icon={<Github size={16} />}
+                            onClick={() => window.open(project.github, '_blank')}
+                          >
+                            View Code
+                          </Button>
+                        )}
+                        {project.live && (
+                          <Button
+                            size="sm"
+                            className="flex-1"
+                            icon={<ExternalLink size={16} />}
+                            onClick={() => window.open(project.live, '_blank')}
+                          >
+                            Live Demo
+                          </Button>
+                        )}
+                      </div>
+                    </CardFooter>
+                  </Card>
+                </motion.div>
+              )
+            })}
           </motion.div>
         </AnimatePresence>
 

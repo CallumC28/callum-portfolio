@@ -2,9 +2,8 @@ import { Github, Linkedin, Mail, Phone } from 'lucide-react'
 
 export const PERSONAL_INFO = {
   name: 'Callum Cummins',
-  title: 'AI Engineer & Full Stack Developer',
+  title: 'Recent Computer Science Graduate',
   email: 'callumcummins28@gmail.com',
-  phone: '+44 7519 911129',
   location: 'United Kingdom',
   github: 'https://github.com/CallumC28',
   linkedin: 'https://www.linkedin.com/in/callum-cummins-330218362/',
@@ -91,7 +90,7 @@ export const PROJECTS = [
     github: 'https://github.com/CallumC28/Gym-Goer-Web-App',
     live: '',
     image: '/project-screenshots/gym-app.png',
-    category: 'AI/ML',
+    category: ['AI/ML', 'Web Development'],
   },
   {
     id: 2,
@@ -120,24 +119,24 @@ export const PROJECTS = [
       'Trending and top-rated movies',
       'Modern component-based architecture',
       'Responsive design',
-      'RESTful API integration'
+      'Numerous dynamic filtering options'
     ],
     github: 'https://github.com/CallumC28/Movie-Explorer',
     live: 'https://movie-explorer-tau-lemon.vercel.app/',
     image: '/project-screenshots/movie-explorer.png',
-    category: 'Web Development', 
+    category: ['Web Development', 'AI/ML'],
   },
   {
     id: 4,
     title: 'Online-Grocery-Web-App',
-    description: 'Comprehensive e-commerce platform with secure authentication and order management.',
+    description: 'Done as part of my Advanced Web Development coursework this comprehensive e-commerce platform with secure authentication and order management.',
     technologies: ['HTML', 'Tailwind CSS', 'JavaScript', 'PHP', 'SQL', 'jQuery'],
     features: [
       'Secure user authentication',
       'Role-based access control',
       'Dynamic product filtering',
       'Order management system',
-      'SEO optimization'
+      'SEO optimisation'
     ],
     github: 'https://github.com/CallumC28/Online-Grocery-Web-App',
     live: '',
@@ -237,12 +236,6 @@ export const CONTACT_INFO = [
     label: 'Email',
     value: PERSONAL_INFO.email,
     href: `mailto:${PERSONAL_INFO.email}`,
-  },
-  {
-    icon: Phone,
-    label: 'Phone',
-    value: PERSONAL_INFO.phone,
-    href: `tel:${PERSONAL_INFO.phone}`,
   },
   {
     icon: Github,
