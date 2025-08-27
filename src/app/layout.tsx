@@ -13,6 +13,9 @@ export const metadata: Metadata = {
   keywords: 'AI Engineer, Machine Learning, Full Stack Developer, Python, JavaScript, React, Data Analysis, Computer Science',
   authors: [{ name: 'Callum Cummins' }],
   creator: 'Callum Cummins',
+    icons: {
+      icon: "/favicon.ico",
+    },
   openGraph: {
     title: 'Callum Cummins - AI Engineer & Full Stack Developer',
     description: 'Computer Science graduate specialising in AI/ML, web development, and data analysis.',
