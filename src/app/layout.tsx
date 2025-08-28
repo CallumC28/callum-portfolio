@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Callum Cummins - AI Engineer & Full Stack Developer',
     description: 'Computer Science graduate specialising in AI/ML, web development, and data analysis.',
-    url: 'https://callumcummins.dev',
+    url: 'https://callum-portfolio.vercel.app/',
     siteName: 'Callum Cummins Portfolio',
     images: [
       {
