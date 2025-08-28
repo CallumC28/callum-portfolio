@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Callum Cummins - Graduate',
   description: 'Recent Computer Science graduate specialising in AI/ML, web development, and data analysis. Experienced in Python, JavaScript, React, and machine learning technologies.',
-  keywords: 'AI Engineer, Machine Learning, Full Stack Developer, Python, JavaScript, React, Data Analysis, Computer Science',
+  keywords: 'AI Engineer, Machine Learning, Full Stack Developer, Python, JavaScript, React, Data Analysis, Computer Science, Graduate',
   authors: [{ name: 'Callum Cummins' }],
   creator: 'Callum Cummins',
   icons: {
