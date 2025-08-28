@@ -77,7 +77,7 @@ export const SKILLS = {
 export const PROJECTS = [
   {
     id: 1,
-    title: 'Gym Goer Web App',
+    title: 'Gym Goer Web App - Dissertation Project',
     description: 'Full-stack fitness tracking application with predictive ML capabilities using custom AI models for exercise progress prediction.',
     technologies: ['PHP', 'PHPml', 'JavaScript', 'Tailwind CSS', 'MySQL', 'Chart.js'],
     features: [
