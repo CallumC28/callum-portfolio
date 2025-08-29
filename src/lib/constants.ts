@@ -82,7 +82,7 @@ export const PROJECTS = [
     technologies: ['PHP', 'PHPml', 'JavaScript', 'Tailwind CSS', 'MySQL', 'Chart.js'],
     features: [
       'Custom AI model using SVR/Linear regression',
-      'Google Maps and OpenWeather API integration',
+      'Google Maps and OpenWeather API integration as well as own RESTful API for saving running routes',
       'Agile development with user feedback iterations',
       '4.2/5 user satisfaction rating',
       '90% recommendation rate'
