@@ -160,6 +160,23 @@ export const PROJECTS = [
     image: '/project-screenshots/flask-detector.png',
     category: ['Web Development', 'AI/ML'],
   },
+    {
+    id: 6,
+    title: 'Password-Strength-Tester',
+    description: 'A simple GUI tool that analyses password strength and provides real-time feedback. It uses entropy, complexity metrics, and custom rules to evaluate the security of a password.',
+    technologies: ['Python', 'Tkinter', 'dataclasses', 'zxcvbn'],
+    features: [
+      'Strength Score (1-10): Based on entropy and guessability',
+      'Tooltips - Explain entropy and strength scoring clearly',
+      'Flags short, repetitive, or overly simple passwords',
+      'User-friendly interface',
+      'Entropy Bits Calculation: Reflects how hard a password is to brute-force'
+    ],
+    github: 'https://github.com/CallumC28/Password-Strength-Tester',
+    live: '',
+    image: '/project-screenshots/password.png',
+    category: 'CyberSecurity',
+  },
 ] as const
 
 export const EXPERIENCE = [

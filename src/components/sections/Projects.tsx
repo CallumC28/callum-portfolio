@@ -11,7 +11,7 @@ import { PROJECTS } from '@/lib/constants'
 
 // Derive types from actual data so TS understands readonly tuples and so on
 type Project = (typeof PROJECTS)[number]
-type Category = 'AI/ML' | 'Web Development' | 'Data Analysis'
+type Category = 'AI/ML' | 'Web Development' | 'Data Analysis' | 'CyberSecurity'
 
 // Normalise category to a readonly array of Category
 const catsOf = (c: Project['category']): readonly Category[] =>
