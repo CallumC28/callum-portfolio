@@ -42,6 +42,11 @@ export const Projects: React.FC = () => {
       label: 'Data Analysis',
       count: PROJECTS.filter((p) => catsOf(p.category).includes('Data Analysis')).length,
     },
+    {
+      name: 'CyberSecurity' as const,
+      label: 'CyberSecurity',
+      count: PROJECTS.filter((p) => catsOf(p.category).includes('CyberSecurity')).length,
+    },
   ] as const
 
   return (
