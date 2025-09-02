@@ -143,6 +143,23 @@ export const PROJECTS = [
     image: '/project-screenshots/grocery-store.png',
     category: 'Web Development',
   },
+  {
+    id: 5,
+    title: 'Phishing Email Detector – Flask Web App',
+    description: 'A simple Flask web app that uses a trained AI model to detect whether an email is phishing or legitimate, with clear results anyone can understand.',
+    technologies: ['HTML', 'CSS', 'Python', 'Flask', 'FastAPI'],
+    features: [
+      'API integration',
+      'Saved Fine-tuned BERT model',
+      'Dynamic email content analysis',
+      'User-friendly results presentation',
+      'Real-time email classification'
+    ],
+    github: 'https://github.com/CallumC28/Flask_Phishing_Email_Detector',
+    live: '',
+    image: '/project-screenshots/flask-detector.png',
+    category: ['Web Development', 'AI/ML'],
+  },
 ] as const
 
 export const EXPERIENCE = [
