@@ -226,7 +226,7 @@ export const PROJECTS = [
     github: 'https://github.com/CallumC28/password_cracker',
     live: '',
     image: '/project-screenshots/cracker.png',
-    category: ['Cybersecurity', 'Web Development'],
+    category: ['CyberSecurity', 'Web Development'],
   },
 ] as const
 

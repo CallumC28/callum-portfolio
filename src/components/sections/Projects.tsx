@@ -71,7 +71,7 @@ export const Projects: React.FC = () => {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: isFaded ? 0.4 : 1, y: 0 }}
         transition={{ delay: index * 0.1, duration: 0.5 }}
-        className={`relative ${isFaded ? 'pointer-events-none' : ''}`}
+        className="relative"
       >
         <Card className={`h-full group transition-all duration-300 ${
           isFaded 
