@@ -26,10 +26,16 @@ export const Projects: React.FC = () => {
       ? PROJECTS
       : PROJECTS.filter((p) => catsOf(p.category).includes(filter))
 
-  // Determine which projects to show
-  const visibleProjects = showAll ? filteredProjects : filteredProjects.slice(0, 2)
-  const fadedProjects = showAll ? [] : filteredProjects.slice(2, 4)
+  // Layout:
+  // - firstTwo: always fully shown
+  // - teaserTwo: shown clipped & faded (until expanded)
+  // - rest: shown only when expanded
+  const firstTwo = filteredProjects.slice(0, 2)
+  const teaserTwo = showAll ? [] : filteredProjects.slice(2, 4)
+  const rest = showAll ? filteredProjects.slice(2) : []
+
   const hasMore = filteredProjects.length > 2
+  const remainingCount = Math.max(filteredProjects.length - 2, 0)
 
   const categories = [
     { name: 'all' as const, label: 'All Projects', count: PROJECTS.length },
@@ -61,33 +67,41 @@ export const Projects: React.FC = () => {
     setShowAll(false)
   }
 
-  const renderProject = (project: Project, index: number, isFaded = false) => {
+  const renderProject = (project: Project, index: number, isTeaser = false) => {
     const cats = catsOf(project.category)
     const isAI = cats.includes('AI/ML')
+    const interactive = !(isTeaser && !showAll)
 
     return (
       <motion.div
         key={project.id}
         initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: isFaded ? 0.4 : 1, y: 0 }}
-        transition={{ delay: index * 0.1, duration: 0.5 }}
-        className={`relative ${isFaded ? 'pointer-events-none' : ''}`}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: index * 0.08, duration: 0.45 }}
+        className={isTeaser && !showAll ? 'relative overflow-hidden' : 'relative'}
       >
-        <Card className={`h-full group transition-all duration-300 ${
-          isFaded 
-            ? 'border-gray-700/50' 
-            : 'hover:border-primary-500/50'
-        }`}>
+        <Card
+          className={[
+            'h-full group transition-all duration-300',
+            interactive ? 'hover:border-primary-500/50' : 'border-gray-700/50'
+          ].join(' ')}
+        >
           {/* Project Image */}
-          <div className="relative overflow-hidden rounded-t-xl">
+          <div
+            className={[
+              'relative overflow-hidden rounded-t-xl',
+              isTeaser && !showAll ? 'max-h-64 md:max-h-72' : ''
+            ].join(' ')}
+          >
             <div className="relative h-56 md:h-64 bg-gradient-to-br from-gray-800 to-gray-900">
               {project.image ? (
                 <img
                   src={project.image}
                   alt={project.title}
-                  className={`absolute inset-0 w-full h-full object-cover transition-transform duration-500 ${
-                    !isFaded ? 'group-hover:scale-110' : ''
-                  }`}
+                  className={[
+                    'absolute inset-0 w-full h-full object-cover transition-transform duration-500',
+                    interactive ? 'group-hover:scale-110' : ''
+                  ].join(' ')}
                   onError={(e) => {
                     // fallback to initials if the file is missing
                     const target = e.currentTarget
@@ -107,8 +121,8 @@ export const Projects: React.FC = () => {
                   .slice(0, 3)}
               </div>
 
-              {/* Overlay */}
-              {!isFaded && (
+              {/* Hover Overlay - interactive only */}
+              {interactive && (
                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                   <div className="flex space-x-4">
                     {project.github && (
@@ -134,7 +148,7 @@ export const Projects: React.FC = () => {
                 </div>
               )}
 
-              {/* Category Badges (support multiple) */}
+              {/* Category Badges */}
               <div className="absolute top-4 right-4 flex gap-2">
                 {cats.map((cat) => (
                   <Badge
@@ -151,9 +165,9 @@ export const Projects: React.FC = () => {
 
           <CardHeader>
             <div className="flex justify-between items-start mb-2">
-              <CardTitle className={`text-xl transition-colors ${
-                !isFaded ? 'group-hover:text-primary-400' : ''
-              }`}>
+              <CardTitle
+                className={interactive ? 'text-xl transition-colors group-hover:text-primary-400' : 'text-xl'}
+              >
                 {project.title}
               </CardTitle>
 
@@ -211,7 +225,7 @@ export const Projects: React.FC = () => {
                   className="flex-1"
                   icon={<Github size={16} />}
                   onClick={() => window.open(project.github, '_blank')}
-                  disabled={isFaded}
+                  disabled={!interactive}
                 >
                   View Code
                 </Button>
@@ -222,7 +236,7 @@ export const Projects: React.FC = () => {
                   className="flex-1"
                   icon={<ExternalLink size={16} />}
                   onClick={() => window.open(project.live, '_blank')}
-                  disabled={isFaded}
+                  disabled={!interactive}
                 >
                   Live Demo
                 </Button>
@@ -230,6 +244,11 @@ export const Projects: React.FC = () => {
             </div>
           </CardFooter>
         </Card>
+
+        {/* Teaser bottom fade */}
+        {isTeaser && !showAll && (
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-gray-950/95" />
+        )}
       </motion.div>
     )
   }
@@ -289,33 +308,36 @@ export const Projects: React.FC = () => {
         <div className="relative">
           <AnimatePresence mode="wait">
             <motion.div
-              key={filter}
+              key={filter + String(showAll)}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
               className="grid grid-cols-1 md:grid-cols-2 gap-8"
             >
-              {/* Always visible projects */}
-              {visibleProjects.map((project, index) => 
-                renderProject(project, index)
+              {/* First two: normal */}
+              {firstTwo.map((project, i) => renderProject(project, i, false))}
+
+              {/* Next two: clipped & faded until expanded */}
+              {teaserTwo.map((project, i) =>
+                renderProject(project, firstTwo.length + i, true)
               )}
-              
-              {/* Faded projects (only shown when not showing all) */}
-              {!showAll && fadedProjects.map((project, index) => 
-                renderProject(project, visibleProjects.length + index, true)
+
+              {/* Rest: only when expanded */}
+              {rest.map((project, i) =>
+                renderProject(project, firstTwo.length + teaserTwo.length + i, false)
               )}
             </motion.div>
           </AnimatePresence>
 
-          {/* See All Button - positioned in the middle of faded projects */}
+          {/* Centered See All Button over the teaser pair */}
           {hasMore && !showAll && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div className="pointer-events-auto z-10">
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
+                  initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.5, duration: 0.3 }}
+                  transition={{ duration: 0.25 }}
                 >
                   <Button
                     size="lg"
@@ -323,7 +345,7 @@ export const Projects: React.FC = () => {
                     className="bg-primary-500/90 backdrop-blur-md hover:bg-primary-500 shadow-xl shadow-primary-500/25 border border-primary-400/20"
                     icon={<ChevronDown size={20} />}
                   >
-                    See All Projects ({filteredProjects.length})
+                    See All Projects ({remainingCount})
                   </Button>
                 </motion.div>
               </div>
