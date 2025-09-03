@@ -27,9 +27,9 @@ export const Projects: React.FC = () => {
       : PROJECTS.filter((p) => catsOf(p.category).includes(filter))
 
   // Determine which projects to show
-  const visibleProjects = showAll ? filteredProjects : filteredProjects.slice(0, 2)
-  const fadedProjects = showAll ? [] : filteredProjects.slice(2, 4)
-  const hasMore = filteredProjects.length > 2
+  const visibleProjects = showAll ? filteredProjects : filteredProjects.slice(0, 4)
+  const fadedProjects = showAll ? [] : filteredProjects.slice(4, 8)
+  const hasMore = filteredProjects.length > 4
 
   const categories = [
     { name: 'all' as const, label: 'All Projects', count: PROJECTS.length },
