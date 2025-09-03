@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ExternalLink, Github, Folder, Filter, Star, TrendingUp, ChevronDown } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/Card'
@@ -9,27 +9,26 @@ import { Button } from '@/components/ui/Button'
 import { FadeInView } from '@/components/animations/FadeInView'
 import { PROJECTS } from '@/lib/constants'
 
-// Derive types from actual data so TS understands readonly tuples and so on
 type Project = (typeof PROJECTS)[number]
 type Category = 'AI/ML' | 'Web Development' | 'Data Analysis' | 'CyberSecurity'
 
-// Normalise category to a readonly array of Category
 const catsOf = (c: Project['category']): readonly Category[] =>
   (Array.isArray(c) ? c : [c]) as readonly Category[]
+
+const TEASER_HEIGHT = 280
+const layoutTransition = { duration: 0.35, ease: [0.22, 1, 0.36, 1] }
+const fadeTransition = { duration: 0.25, ease: 'easeOut' }
 
 export const Projects: React.FC = () => {
   const [filter, setFilter] = useState<'all' | Category>('all')
   const [showAll, setShowAll] = useState(false)
+  const sectionRef = useRef<HTMLElement | null>(null)
 
   const filteredProjects =
     filter === 'all'
       ? PROJECTS
       : PROJECTS.filter((p) => catsOf(p.category).includes(filter))
 
-  // Layout:
-  // - firstTwo: always fully shown
-  // - teaserTwo: shown clipped & faded (until expanded)
-  // - rest: shown only when expanded
   const firstTwo = filteredProjects.slice(0, 2)
   const teaserTwo = showAll ? [] : filteredProjects.slice(2, 4)
   const rest = showAll ? filteredProjects.slice(2) : []
@@ -61,10 +60,14 @@ export const Projects: React.FC = () => {
     },
   ] as const
 
-  // Reset showAll when filter changes
   const handleFilterChange = (newFilter: 'all' | Category) => {
     setFilter(newFilter)
     setShowAll(false)
+  }
+
+  const handleShowLess = () => {
+    setShowAll(false)
+    sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   const renderProject = (project: Project, index: number, isTeaser = false) => {
@@ -75,186 +78,185 @@ export const Projects: React.FC = () => {
     return (
       <motion.div
         key={project.id}
-        initial={{ opacity: 0, y: 30 }}
+        layout
+        transition={layoutTransition}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: index * 0.08, duration: 0.45 }}
-        className={isTeaser && !showAll ? 'relative overflow-hidden' : 'relative'}
+        exit={{ opacity: 0, y: 10 }}
+        className="relative"
       >
-        <Card
-          className={[
-            'h-full group transition-all duration-300',
-            interactive ? 'hover:border-primary-500/50' : 'border-gray-700/50'
-          ].join(' ')}
+        <motion.div
+          layout
+          transition={layoutTransition}
+          style={{ overflow: 'hidden' }}
+          initial={false}
+          animate={{ height: isTeaser && !showAll ? TEASER_HEIGHT : 'auto' }}
         >
-          {/* Project Image */}
-          <div
+          <Card
             className={[
-              'relative overflow-hidden rounded-t-xl',
-              isTeaser && !showAll ? 'max-h-64 md:max-h-72' : ''
+              'h-full group transition-all duration-300',
+              interactive ? 'hover:border-primary-500/50' : 'border-gray-700/50'
             ].join(' ')}
           >
-            <div className="relative h-56 md:h-64 bg-gradient-to-br from-gray-800 to-gray-900">
-              {project.image ? (
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className={[
-                    'absolute inset-0 w-full h-full object-cover transition-transform duration-500',
-                    interactive ? 'group-hover:scale-110' : ''
-                  ].join(' ')}
-                  onError={(e) => {
-                    // fallback to initials if the file is missing
-                    const target = e.currentTarget
-                    target.style.display = 'none'
-                    const fb = target.parentElement?.querySelector('.fallback')
-                    fb && fb.classList.remove('hidden')
-                  }}
-                />
-              ) : null}
+            <div className="relative overflow-hidden rounded-t-xl">
+              <div className="relative h-56 md:h-64 bg-gradient-to-br from-gray-800 to-gray-900">
+                {project.image ? (
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className={[
+                      'absolute inset-0 w-full h-full object-cover transition-transform duration-500',
+                      interactive ? 'group-hover:scale-110' : ''
+                    ].join(' ')}
+                    onError={(e) => {
+                      const target = e.currentTarget
+                      target.style.display = 'none'
+                      const fb = target.parentElement?.querySelector('.fallback')
+                      fb && fb.classList.remove('hidden')
+                    }}
+                  />
+                ) : null}
 
-              {/* Fallback initials (hidden until image error) */}
-              <div className="fallback absolute inset-0 hidden items-center justify-center text-4xl font-bold text-gray-600">
-                {project.title
-                  .split(' ')
-                  .map((w) => w[0])
-                  .join('')
-                  .slice(0, 3)}
-              </div>
+                <div className="fallback absolute inset-0 hidden items-center justify-center text-4xl font-bold text-gray-600">
+                  {project.title
+                    .split(' ')
+                    .map((w) => w[0])
+                    .join('')
+                    .slice(0, 3)}
+                </div>
 
-              {/* Hover Overlay - interactive only */}
-              {interactive && (
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                  <div className="flex space-x-4">
-                    {project.github && (
-                      <Button
-                        size="sm"
-                        icon={<Github size={16} />}
-                        onClick={() => window.open(project.github, '_blank')}
-                      >
-                        Code
-                      </Button>
-                    )}
-                    {project.live && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        icon={<ExternalLink size={16} />}
-                        onClick={() => window.open(project.live, '_blank')}
-                      >
-                        Demo
-                      </Button>
-                    )}
+                {interactive && (
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <div className="flex space-x-4">
+                      {project.github && (
+                        <Button
+                          size="sm"
+                          icon={<Github size={16} />}
+                          onClick={() => window.open(project.github, '_blank')}
+                        >
+                          Code
+                        </Button>
+                      )}
+                      {project.live && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          icon={<ExternalLink size={16} />}
+                          onClick={() => window.open(project.live, '_blank')}
+                        >
+                          Demo
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* Category Badges */}
-              <div className="absolute top-4 right-4 flex gap-2">
-                {cats.map((cat) => (
-                  <Badge
-                    key={cat}
-                    variant={cat === 'AI/ML' ? 'secondary' : 'primary'}
-                    className="backdrop-blur-md"
-                  >
-                    {cat}
-                  </Badge>
-                ))}
+                <div className="absolute top-4 right-4 flex gap-2">
+                  {cats.map((cat) => (
+                    <Badge
+                      key={cat}
+                      variant={cat === 'AI/ML' ? 'secondary' : 'primary'}
+                      className="backdrop-blur-md"
+                    >
+                      {cat}
+                    </Badge>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
 
-          <CardHeader>
-            <div className="flex justify-between items-start mb-2">
-              <CardTitle
-                className={interactive ? 'text-xl transition-colors group-hover:text-primary-400' : 'text-xl'}
-              >
-                {project.title}
-              </CardTitle>
-
-              {isAI && (
-                <div className="flex items-center text-secondary-400">
-                  <TrendingUp size={16} />
-                  <Star size={14} className="ml-1" />
-                </div>
-              )}
-            </div>
-
-            <p className="text-gray-400 text-sm leading-relaxed">
-              {project.description}
-            </p>
-          </CardHeader>
-
-          <CardContent>
-            {/* Technologies */}
-            <div className="mb-4">
-              <h4 className="text-sm font-semibold text-white mb-2">Tech Stack</h4>
-              <div className="flex flex-wrap gap-2">
-                {project.technologies.slice(0, 6).map((tech) => (
-                  <Badge key={tech} variant="outline" size="sm">
-                    {tech}
-                  </Badge>
-                ))}
-                {project.technologies.length > 6 && (
-                  <Badge variant="outline" size="sm">
-                    +{project.technologies.length - 6} more
-                  </Badge>
+            <CardHeader>
+              <div className="flex justify-between items-start mb-2">
+                <CardTitle
+                  className={interactive ? 'text-xl transition-colors group-hover:text-primary-400' : 'text-xl'}
+                >
+                  {project.title}
+                </CardTitle>
+                {isAI && (
+                  <div className="flex items-center text-secondary-400">
+                    <TrendingUp size={16} />
+                    <Star size={14} className="ml-1" />
+                  </div>
                 )}
               </div>
-            </div>
+              <p className="text-gray-400 text-sm leading-relaxed">{project.description}</p>
+            </CardHeader>
 
-            {/* Key Features */}
-            <div>
-              <h4 className="text-sm font-semibold text-white mb-2">Key Features</h4>
-              <ul className="space-y-1">
-                {project.features.slice(0, 5).map((feature, idx) => (
-                  <li key={idx} className="text-xs text-gray-400 flex items-start">
-                    <span className="text-primary-400 mr-2">•</span>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </CardContent>
+            <CardContent>
+              <div className="mb-4">
+                <h4 className="text-sm font-semibold text-white mb-2">Tech Stack</h4>
+                <div className="flex flex-wrap gap-2">
+                  {project.technologies.slice(0, 6).map((tech) => (
+                    <Badge key={tech} variant="outline" size="sm">
+                      {tech}
+                    </Badge>
+                  ))}
+                  {project.technologies.length > 6 && (
+                    <Badge variant="outline" size="sm">
+                      +{project.technologies.length - 6} more
+                    </Badge>
+                  )}
+                </div>
+              </div>
 
-          <CardFooter>
-            <div className="flex space-x-3 w-full">
-              {project.github && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex-1"
-                  icon={<Github size={16} />}
-                  onClick={() => window.open(project.github, '_blank')}
-                  disabled={!interactive}
-                >
-                  View Code
-                </Button>
-              )}
-              {project.live && (
-                <Button
-                  size="sm"
-                  className="flex-1"
-                  icon={<ExternalLink size={16} />}
-                  onClick={() => window.open(project.live, '_blank')}
-                  disabled={!interactive}
-                >
-                  Live Demo
-                </Button>
-              )}
-            </div>
-          </CardFooter>
-        </Card>
+              <div>
+                <h4 className="text-sm font-semibold text-white mb-2">Key Features</h4>
+                <ul className="space-y-1">
+                  {project.features.slice(0, 5).map((feature, idx) => (
+                    <li key={idx} className="text-xs text-gray-400 flex items-start">
+                      <span className="text-primary-400 mr-2">•</span>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </CardContent>
 
-        {/* Teaser bottom fade */}
-        {isTeaser && !showAll && (
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-gray-950/95" />
-        )}
+            <CardFooter>
+              <div className="flex space-x-3 w-full">
+                {project.github && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1"
+                    icon={<Github size={16} />}
+                    onClick={() => window.open(project.github, '_blank')}
+                    disabled={!interactive}
+                  >
+                    View Code
+                  </Button>
+                )}
+                {project.live && (
+                  <Button
+                    size="sm"
+                    className="flex-1"
+                    icon={<ExternalLink size={16} />}
+                    onClick={() => window.open(project.live, '_blank')}
+                    disabled={!interactive}
+                  >
+                    Live Demo
+                  </Button>
+                )}
+              </div>
+            </CardFooter>
+          </Card>
+
+          {isTeaser && !showAll && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={fadeTransition}
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-gray-950/95"
+            />
+          )}
+        </motion.div>
       </motion.div>
     )
   }
 
   return (
-    <section id="projects" className="py-20 relative">
+    <section id="projects" ref={sectionRef} className="py-20 relative">
       <div className="container mx-auto px-4">
         <FadeInView>
           <div className="text-center mb-16">
@@ -266,11 +268,9 @@ export const Projects: React.FC = () => {
             >
               <Folder className="w-8 h-8 text-accent-400" />
             </motion.div>
-
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
               <span className="gradient-text">Featured Projects</span>
             </h2>
-
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
               A showcase of personal projects and coursework combining AI, web development, and user-centered design.
             </p>
@@ -306,67 +306,70 @@ export const Projects: React.FC = () => {
 
         {/* Projects Grid */}
         <div className="relative">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={filter + String(showAll)}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="grid grid-cols-1 md:grid-cols-2 gap-8"
-            >
-              {/* First two: normal */}
-              {firstTwo.map((project, i) => renderProject(project, i, false))}
-
-              {/* Next two: clipped & faded until expanded */}
-              {teaserTwo.map((project, i) =>
-                renderProject(project, firstTwo.length + i, true)
-              )}
-
-              {/* Rest: only when expanded */}
-              {rest.map((project, i) =>
-                renderProject(project, firstTwo.length + teaserTwo.length + i, false)
-              )}
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Centered See All Button over the teaser pair */}
-          {hasMore && !showAll && (
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="pointer-events-auto z-10">
+          <motion.div
+            layout
+            transition={layoutTransition}
+            className="grid grid-cols-1 md:grid-cols-2 gap-8"
+          >
+            {firstTwo.map((project, i) => renderProject(project, i, false))}
+            {teaserTwo.map((project, i) => renderProject(project, firstTwo.length + i, true))}
+            <AnimatePresence initial={false}>
+              {rest.map((project, i) => (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.25 }}
+                  key={project.id}
+                  layout
+                  transition={layoutTransition}
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
                 >
-                  <Button
-                    size="lg"
-                    onClick={() => setShowAll(true)}
-                    className="bg-primary-500/90 backdrop-blur-md hover:bg-primary-500 shadow-xl shadow-primary-500/25 border border-primary-400/20"
-                    icon={<ChevronDown size={20} />}
-                  >
-                    See All Projects ({remainingCount})
-                  </Button>
+                  {renderProject(project, firstTwo.length + teaserTwo.length + i, false)}
                 </motion.div>
-              </div>
-            </div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+
+          {hasMore && !showAll && (
+            <motion.div
+              layout
+              transition={layoutTransition}
+              className="absolute bottom-8 w-full flex justify-center pointer-events-auto z-10"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+            >
+              <Button
+                size="lg"
+                onClick={() => setShowAll(true)}
+                className="bg-primary-500/90 backdrop-blur-md hover:bg-primary-500 shadow-xl shadow-primary-500/25 border border-primary-400/20"
+                icon={<ChevronDown size={20} />}
+              >
+                See All Projects {remainingCount} remaining
+              </Button>
+            </motion.div>
           )}
         </div>
 
-        {/* Show Less Button (when all projects are visible) */}
-        {showAll && hasMore && (
-          <div className="text-center mt-12">
-            <Button
-              variant="outline"
-              onClick={() => setShowAll(false)}
-              className="mx-auto"
+        <AnimatePresence>
+          {showAll && hasMore && (
+            <motion.div
+              className="text-center mt-12"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={fadeTransition}
             >
-              Show Less
-            </Button>
-          </div>
-        )}
+              <Button
+                variant="outline"
+                onClick={handleShowLess}
+                className="mx-auto"
+              >
+                Show Less
+              </Button>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        {/* GitHub */}
         <FadeInView>
           <div className="mt-16 text-center">
             <Card className="inline-block bg-gradient-to-r from-primary-500/10 to-secondary-500/10 border-primary-500/20">
