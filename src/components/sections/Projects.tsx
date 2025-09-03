@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ExternalLink, Github, Folder, Filter, Star, TrendingUp } from 'lucide-react'
+import { ExternalLink, Github, Folder, Filter, Star, TrendingUp, ChevronDown } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
@@ -19,11 +19,17 @@ const catsOf = (c: Project['category']): readonly Category[] =>
 
 export const Projects: React.FC = () => {
   const [filter, setFilter] = useState<'all' | Category>('all')
+  const [showAll, setShowAll] = useState(false)
 
   const filteredProjects =
     filter === 'all'
       ? PROJECTS
       : PROJECTS.filter((p) => catsOf(p.category).includes(filter))
+
+  // Determine which projects to show
+  const visibleProjects = showAll ? filteredProjects : filteredProjects.slice(0, 2)
+  const fadedProjects = showAll ? [] : filteredProjects.slice(2, 4)
+  const hasMore = filteredProjects.length > 2
 
   const categories = [
     { name: 'all' as const, label: 'All Projects', count: PROJECTS.length },
@@ -48,6 +54,185 @@ export const Projects: React.FC = () => {
       count: PROJECTS.filter((p) => catsOf(p.category).includes('CyberSecurity')).length,
     },
   ] as const
+
+  // Reset showAll when filter changes
+  const handleFilterChange = (newFilter: 'all' | Category) => {
+    setFilter(newFilter)
+    setShowAll(false)
+  }
+
+  const renderProject = (project: Project, index: number, isFaded = false) => {
+    const cats = catsOf(project.category)
+    const isAI = cats.includes('AI/ML')
+
+    return (
+      <motion.div
+        key={project.id}
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: isFaded ? 0.4 : 1, y: 0 }}
+        transition={{ delay: index * 0.1, duration: 0.5 }}
+        className={`relative ${isFaded ? 'pointer-events-none' : ''}`}
+      >
+        <Card className={`h-full group transition-all duration-300 ${
+          isFaded 
+            ? 'border-gray-700/50' 
+            : 'hover:border-primary-500/50'
+        }`}>
+          {/* Project Image */}
+          <div className="relative overflow-hidden rounded-t-xl">
+            <div className="relative h-56 md:h-64 bg-gradient-to-br from-gray-800 to-gray-900">
+              {project.image ? (
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  className={`absolute inset-0 w-full h-full object-cover transition-transform duration-500 ${
+                    !isFaded ? 'group-hover:scale-110' : ''
+                  }`}
+                  onError={(e) => {
+                    // fallback to initials if the file is missing
+                    const target = e.currentTarget
+                    target.style.display = 'none'
+                    const fb = target.parentElement?.querySelector('.fallback')
+                    fb && fb.classList.remove('hidden')
+                  }}
+                />
+              ) : null}
+
+              {/* Fallback initials (hidden until image error) */}
+              <div className="fallback absolute inset-0 hidden items-center justify-center text-4xl font-bold text-gray-600">
+                {project.title
+                  .split(' ')
+                  .map((w) => w[0])
+                  .join('')
+                  .slice(0, 3)}
+              </div>
+
+              {/* Overlay */}
+              {!isFaded && (
+                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  <div className="flex space-x-4">
+                    {project.github && (
+                      <Button
+                        size="sm"
+                        icon={<Github size={16} />}
+                        onClick={() => window.open(project.github, '_blank')}
+                      >
+                        Code
+                      </Button>
+                    )}
+                    {project.live && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        icon={<ExternalLink size={16} />}
+                        onClick={() => window.open(project.live, '_blank')}
+                      >
+                        Demo
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Category Badges (support multiple) */}
+              <div className="absolute top-4 right-4 flex gap-2">
+                {cats.map((cat) => (
+                  <Badge
+                    key={cat}
+                    variant={cat === 'AI/ML' ? 'secondary' : 'primary'}
+                    className="backdrop-blur-md"
+                  >
+                    {cat}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <CardHeader>
+            <div className="flex justify-between items-start mb-2">
+              <CardTitle className={`text-xl transition-colors ${
+                !isFaded ? 'group-hover:text-primary-400' : ''
+              }`}>
+                {project.title}
+              </CardTitle>
+
+              {isAI && (
+                <div className="flex items-center text-secondary-400">
+                  <TrendingUp size={16} />
+                  <Star size={14} className="ml-1" />
+                </div>
+              )}
+            </div>
+
+            <p className="text-gray-400 text-sm leading-relaxed">
+              {project.description}
+            </p>
+          </CardHeader>
+
+          <CardContent>
+            {/* Technologies */}
+            <div className="mb-4">
+              <h4 className="text-sm font-semibold text-white mb-2">Tech Stack</h4>
+              <div className="flex flex-wrap gap-2">
+                {project.technologies.slice(0, 6).map((tech) => (
+                  <Badge key={tech} variant="outline" size="sm">
+                    {tech}
+                  </Badge>
+                ))}
+                {project.technologies.length > 6 && (
+                  <Badge variant="outline" size="sm">
+                    +{project.technologies.length - 6} more
+                  </Badge>
+                )}
+              </div>
+            </div>
+
+            {/* Key Features */}
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-2">Key Features</h4>
+              <ul className="space-y-1">
+                {project.features.slice(0, 5).map((feature, idx) => (
+                  <li key={idx} className="text-xs text-gray-400 flex items-start">
+                    <span className="text-primary-400 mr-2">•</span>
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </CardContent>
+
+          <CardFooter>
+            <div className="flex space-x-3 w-full">
+              {project.github && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex-1"
+                  icon={<Github size={16} />}
+                  onClick={() => window.open(project.github, '_blank')}
+                  disabled={isFaded}
+                >
+                  View Code
+                </Button>
+              )}
+              {project.live && (
+                <Button
+                  size="sm"
+                  className="flex-1"
+                  icon={<ExternalLink size={16} />}
+                  onClick={() => window.open(project.live, '_blank')}
+                  disabled={isFaded}
+                >
+                  Live Demo
+                </Button>
+              )}
+            </div>
+          </CardFooter>
+        </Card>
+      </motion.div>
+    )
+  }
 
   return (
     <section id="projects" className="py-20 relative">
@@ -79,7 +264,7 @@ export const Projects: React.FC = () => {
             {categories.map((category) => (
               <motion.button
                 key={category.name}
-                onClick={() => setFilter(category.name)}
+                onClick={() => handleFilterChange(category.name)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className={`px-6 py-3 rounded-full transition-all duration-300 ${
@@ -101,176 +286,63 @@ export const Projects: React.FC = () => {
         </FadeInView>
 
         {/* Projects Grid */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={filter}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="grid grid-cols-1 md:grid-cols-2 gap-8"
-          >
-            {filteredProjects.map((project, index) => {
-              const cats = catsOf(project.category)
-              const isAI = cats.includes('AI/ML')
+        <div className="relative">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={filter}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="grid grid-cols-1 md:grid-cols-2 gap-8"
+            >
+              {/* Always visible projects */}
+              {visibleProjects.map((project, index) => 
+                renderProject(project, index)
+              )}
+              
+              {/* Faded projects (only shown when not showing all) */}
+              {!showAll && fadedProjects.map((project, index) => 
+                renderProject(project, visibleProjects.length + index, true)
+              )}
+            </motion.div>
+          </AnimatePresence>
 
-              return (
+          {/* See All Button - positioned in the middle of faded projects */}
+          {hasMore && !showAll && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="pointer-events-auto z-10">
                 <motion.div
-                  key={project.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.5, duration: 0.3 }}
                 >
-                  <Card className="h-full group hover:border-primary-500/50 transition-all duration-300">
-                    {/* Project Image */}
-                    <div className="relative overflow-hidden rounded-t-xl">
-                      <div className="relative h-56 md:h-64 bg-gradient-to-br from-gray-800 to-gray-900">
-                        {project.image ? (
-                          <img
-                            src={project.image}
-                            alt={project.title}
-                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            onError={(e) => {
-                              // fallback to initials if the file is missing
-                              const target = e.currentTarget
-                              target.style.display = 'none'
-                              const fb = target.parentElement?.querySelector('.fallback')
-                              fb && fb.classList.remove('hidden')
-                            }}
-                          />
-                        ) : null}
-
-                        {/* Fallback initials (hidden until image error) */}
-                        <div className="fallback absolute inset-0 hidden items-center justify-center text-4xl font-bold text-gray-600">
-                          {project.title
-                            .split(' ')
-                            .map((w) => w[0])
-                            .join('')
-                            .slice(0, 3)}
-                        </div>
-
-                        {/* Overlay */}
-                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                          <div className="flex space-x-4">
-                            {project.github && (
-                              <Button
-                                size="sm"
-                                icon={<Github size={16} />}
-                                onClick={() => window.open(project.github, '_blank')}
-                              >
-                                Code
-                              </Button>
-                            )}
-                            {project.live && (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                icon={<ExternalLink size={16} />}
-                                onClick={() => window.open(project.live, '_blank')}
-                              >
-                                Demo
-                              </Button>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Category Badges (support multiple) */}
-                        <div className="absolute top-4 right-4 flex gap-2">
-                          {cats.map((cat) => (
-                            <Badge
-                              key={cat}
-                              variant={cat === 'AI/ML' ? 'secondary' : 'primary'}
-                              className="backdrop-blur-md"
-                            >
-                              {cat}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-
-                    <CardHeader>
-                      <div className="flex justify-between items-start mb-2">
-                        <CardTitle className="text-xl group-hover:text-primary-400 transition-colors">
-                          {project.title}
-                        </CardTitle>
-
-                        {isAI && (
-                          <div className="flex items-center text-secondary-400">
-                            <TrendingUp size={16} />
-                            <Star size={14} className="ml-1" />
-                          </div>
-                        )}
-                      </div>
-
-                      <p className="text-gray-400 text-sm leading-relaxed">
-                        {project.description}
-                      </p>
-                    </CardHeader>
-
-                    <CardContent>
-                      {/* Technologies */}
-                      <div className="mb-4">
-                        <h4 className="text-sm font-semibold text-white mb-2">Tech Stack</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {project.technologies.slice(0, 6).map((tech) => (
-                            <Badge key={tech} variant="outline" size="sm">
-                              {tech}
-                            </Badge>
-                          ))}
-                          {project.technologies.length > 6 && (
-                            <Badge variant="outline" size="sm">
-                              +{project.technologies.length - 6} more
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Key Features */}
-                      <div>
-                        <h4 className="text-sm font-semibold text-white mb-2">Key Features</h4>
-                        <ul className="space-y-1">
-                          {project.features.slice(0, 5).map((feature, idx) => (
-                            <li key={idx} className="text-xs text-gray-400 flex items-start">
-                              <span className="text-primary-400 mr-2">•</span>
-                              {feature}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </CardContent>
-
-                    <CardFooter>
-                      <div className="flex space-x-3 w-full">
-                        {project.github && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="flex-1"
-                            icon={<Github size={16} />}
-                            onClick={() => window.open(project.github, '_blank')}
-                          >
-                            View Code
-                          </Button>
-                        )}
-                        {project.live && (
-                          <Button
-                            size="sm"
-                            className="flex-1"
-                            icon={<ExternalLink size={16} />}
-                            onClick={() => window.open(project.live, '_blank')}
-                          >
-                            Live Demo
-                          </Button>
-                        )}
-                      </div>
-                    </CardFooter>
-                  </Card>
+                  <Button
+                    size="lg"
+                    onClick={() => setShowAll(true)}
+                    className="bg-primary-500/90 backdrop-blur-md hover:bg-primary-500 shadow-xl shadow-primary-500/25 border border-primary-400/20"
+                    icon={<ChevronDown size={20} />}
+                  >
+                    See All Projects ({filteredProjects.length})
+                  </Button>
                 </motion.div>
-              )
-            })}
-          </motion.div>
-        </AnimatePresence>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Show Less Button (when all projects are visible) */}
+        {showAll && hasMore && (
+          <div className="text-center mt-12">
+            <Button
+              variant="outline"
+              onClick={() => setShowAll(false)}
+              className="mx-auto"
+            >
+              Show Less
+            </Button>
+          </div>
+        )}
 
         {/* GitHub */}
         <FadeInView>

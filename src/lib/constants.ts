@@ -147,7 +147,7 @@ export const PROJECTS = [
     id: 5,
     title: 'Phishing Email Detector – Flask Web App',
     description: 'A simple Flask web app that uses a trained AI model to detect whether an email is phishing or legitimate, with clear results anyone can understand.',
-    technologies: ['HTML', 'CSS', 'Python', 'Flask', 'FastAPI'],
+    technologies: ['HTML/CSS', 'Python', 'Flask', 'FastAPI'],
     features: [
       'API integration',
       'Saved Fine-tuned BERT model',
@@ -181,7 +181,7 @@ export const PROJECTS = [
     id: 7,
     title: 'Face Recognition',
     description: 'A python tool to capture faces and store them for it to then recognise saved faces with confidence metrics.',
-    technologies: ['Python', 'cv2', 'InsightFace', 'numpy'],
+    technologies: ['Python', 'CV2', 'InsightFace', 'NumPy'],
     features: [
       'Real-time face detection and recognition',
       'Cropped face images automatically saved in enrolled_images/',
@@ -198,7 +198,7 @@ export const PROJECTS = [
     id: 8,
     title: 'Job Market Analyser',
     description: 'A tool that provides insights into job market trends, including demand for specific skills and salary expectations.',
-    technologies: ['Python', 'Pandas', 'BeautifulSoup', 'Flask', 'JavaScript', 'HTML', 'CSS'],
+    technologies: ['Python', 'Pandas', 'BeautifulSoup', 'Flask', 'JavaScript', 'HTML/CSS'],
     features: [
       'Data visualisation of job trends',
       'Skill demand analysis',
@@ -210,6 +210,23 @@ export const PROJECTS = [
     live: '',
     image: '/project-screenshots/job.png',
     category: 'Data Analysis',
+  },
+  {
+    id: 9,
+    title: 'Password Cracker',
+    description: 'Educational Flask web app demonstrating password security concepts including hashing, salting, dictionary attacks, and brute-force methods.',
+    technologies: ['Python', 'Flask', 'Hashlib', 'HTML/CSS'],
+    features: [
+      'Generates SHA-256 and salted hashes for input wordlist passwords',
+      'Implements dictionary-based password cracking',
+      'Brute-force cracking for short passwords (≤ configurable length)',
+      'Interactive web-based report with detailed metrics',
+      'Configurable wordlist support for experiments'
+    ],
+    github: 'https://github.com/CallumC28/password_cracker',
+    live: '',
+    image: '/project-screenshots/cracker.png',
+    category: ['Cybersecurity', 'Web Development'],
   },
 ] as const
 
