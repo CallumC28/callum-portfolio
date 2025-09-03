@@ -160,7 +160,7 @@ export const PROJECTS = [
     image: '/project-screenshots/flask-detector.png',
     category: ['Web Development', 'AI/ML'],
   },
-    {
+  {
     id: 6,
     title: 'Password-Strength-Tester',
     description: 'A simple GUI tool that analyses password strength and provides real-time feedback. It uses entropy, complexity metrics, and custom rules to evaluate the security of a password.',
@@ -176,6 +176,40 @@ export const PROJECTS = [
     live: '',
     image: '/project-screenshots/password.png',
     category: 'CyberSecurity',
+  },
+    {
+    id: 7,
+    title: 'Face Recognition',
+    description: 'A python tool to capture faces and store them for it to then recognise saved faces with confidence metrics.',
+    technologies: ['Python', 'cv2', 'InsightFace', 'numpy'],
+    features: [
+      'Real-time face detection and recognition',
+      'Cropped face images automatically saved in enrolled_images/',
+      'User-friendly interface',
+      'Supports multiple faces for recognition',
+      'Cosine similarity scoring for recognition confidence'
+    ],
+    github: 'https://github.com/CallumC28/face_recognition',
+    live: '',
+    image: '',
+    category: 'AI/ML',
+  },
+    {
+    id: 8,
+    title: 'Job Market Analyser',
+    description: 'A tool that provides insights into job market trends, including demand for specific skills and salary expectations.',
+    technologies: ['Python', 'Pandas', 'BeautifulSoup', 'Flask', 'JavaScript', 'HTML', 'CSS'],
+    features: [
+      'Data visualisation of job trends',
+      'Skill demand analysis',
+      'Web scraper pulls job listings from python.org/jobs',
+      'User-friendly interface',
+      'Job listing results with titles, companies, locations, and clickable links'
+    ],
+    github: 'https://github.com/CallumC28/Job_Analyser',
+    live: '',
+    image: '/project-screenshots/job.png',
+    category: 'Data Analysis',
   },
 ] as const
 
