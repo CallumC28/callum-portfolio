@@ -128,6 +128,24 @@ export const PROJECTS = [
   },
   {
     id: 4,
+    title: '3D-Globe',
+    description: 'An interactive 3D globe web app that lets users click on countries to explore AI-generated facts, landmarks, languages, and fun trivia. Built as part of my final year Computer Science project, it combines data visualization, geospatial processing, and AI integration.',
+    technologies: ['Next.js', 'TypeScript', 'Three.js', 'React Three Fiber', 'D3-Geo', 'Tailwind CSS', 'OpenAI API'],
+    features: [
+    'Interactive 3D globe with orbit controls',
+    'Country detection using ISO3 codes and GeoJSON',
+    'AI-generated summaries, landmarks, languages, and fun facts',
+    'Dynamic country highlighting with 3D jenga-piece style extrusion',
+    'Search functionality for countries and cities',
+    'Responsive design for desktop and mobile'
+    ],
+    github: 'https://github.com/CallumC28/3D-Globe',
+    live: 'https://globe-facts.vercel.app/',
+    image: '/project-screenshots/globe.png',
+    category: ['Web Development', 'AI/ML'],
+  },
+  {
+    id: 5,
     title: 'Online-Grocery-Web-App',
     description: 'Done as part of my Advanced Web Development coursework this comprehensive e-commerce platform with secure authentication and order management.',
     technologies: ['HTML', 'Tailwind CSS', 'JavaScript', 'PHP', 'SQL', 'jQuery'],
@@ -144,8 +162,8 @@ export const PROJECTS = [
     category: 'Web Development',
   },
   {
-    id: 5,
-    title: 'Phishing Email Detector – Flask Web App',
+    id: 6,
+    title: 'Phishing Email Detector - Flask Web App',
     description: 'A simple Flask web app that uses a trained AI model to detect whether an email is phishing or legitimate, with clear results anyone can understand.',
     technologies: ['HTML/CSS', 'Python', 'Flask', 'FastAPI'],
     features: [
@@ -161,7 +179,7 @@ export const PROJECTS = [
     category: ['Web Development', 'AI/ML'],
   },
   {
-    id: 6,
+    id: 7,
     title: 'Password-Strength-Tester',
     description: 'A simple GUI tool that analyses password strength and provides real-time feedback. It uses entropy, complexity metrics, and custom rules to evaluate the security of a password.',
     technologies: ['Python', 'Tkinter', 'dataclasses', 'zxcvbn'],
@@ -178,7 +196,7 @@ export const PROJECTS = [
     category: 'CyberSecurity',
   },
     {
-    id: 7,
+    id: 8,
     title: 'Face Recognition',
     description: 'A python tool to capture faces and store them for it to then recognise saved faces with confidence metrics.',
     technologies: ['Python', 'CV2', 'InsightFace', 'NumPy'],
@@ -195,7 +213,7 @@ export const PROJECTS = [
     category: 'AI/ML',
   },
     {
-    id: 8,
+    id: 9,
     title: 'Job Market Analyser',
     description: 'A tool that provides insights into job market trends, including demand for specific skills and salary expectations.',
     technologies: ['Python', 'Pandas', 'BeautifulSoup', 'Flask', 'JavaScript', 'HTML/CSS'],
@@ -212,7 +230,7 @@ export const PROJECTS = [
     category: 'Data Analysis',
   },
   {
-    id: 9,
+    id: 10,
     title: 'Password Cracker',
     description: 'Educational Flask web app demonstrating password security concepts including hashing, salting, dictionary attacks, and brute-force methods.',
     technologies: ['Python', 'Flask', 'Hashlib', 'HTML/CSS'],
