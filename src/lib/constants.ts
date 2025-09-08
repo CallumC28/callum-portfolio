@@ -79,7 +79,7 @@ export const PROJECTS = [
     id: 1,
     title: 'Gym Goer Web App - Dissertation Project',
     description: 'Full-stack fitness tracking application with predictive ML capabilities using custom AI models for exercise progress prediction.',
-    technologies: ['PHP', 'PHPml', 'JavaScript', 'Tailwind CSS', 'MySQL', 'Chart.js'],
+    technologies: ['HTML/CSS', 'PHP', 'PHPml', 'JavaScript', 'Tailwind CSS', 'MySQL', 'Chart.js'],
     features: [
       'Custom AI model using SVR/Linear regression',
       'Google Maps and OpenWeather API integration as well as own RESTful API for saving running routes',
