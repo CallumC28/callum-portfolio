@@ -129,7 +129,7 @@ export const PROJECTS = [
   {
     id: 4,
     title: '3D-Globe',
-    description: 'An interactive 3D globe web app that lets users click on countries to explore AI-generated facts, landmarks, languages, and fun trivia. Built as part of my final year Computer Science project, it combines data visualization, geospatial processing, and AI integration.',
+    description: 'An interactive 3D globe web app that lets users click on countries to explore AI-generated facts, landmarks, languages, and fun trivia. It combines data visualisation, geospatial processing, and AI integration.',
     technologies: ['Next.js', 'TypeScript', 'Three.js', 'React Three Fiber', 'D3-Geo', 'Tailwind CSS', 'OpenAI API'],
     features: [
     'Interactive 3D globe with orbit controls',
