@@ -251,31 +251,16 @@ export const PROJECTS = [
 export const EXPERIENCE = [
   {
     id: 1,
-    title: 'Summer Labourer',
-    company: 'Self Employed Handyman (Family Business)',
-    location: 'Buckley',
-    period: 'Summers 2021 - 2024',
+    title: 'Store Colleague',
+    company: 'Tesco',
+    location: 'Mold, Flintshire, Wales',
+    period: 'Aug 2025 - Present',
     description: 'Assisted with construction and landscaping projects including patios, fencing, and general repairs.',
     responsibilities: [
-      'Followed strict safety procedures',
-      'Communicated effectively with clients',
-      'Adapted to on-site challenges',
+      'Stocking shelves and managing inventory',
+      'Communicated effectively with customers',
+      'Adapted to challenges',
       'Maintained high quality standards'
-    ],
-    type: 'work',
-  },
-  {
-    id: 2,
-    title: 'Apprentice (Traineeship)',
-    company: 'ATS',
-    location: 'Flint',
-    period: 'Mar - Aug 2019',
-    description: 'Handled workshop organisation, customer service, and inventory management in automotive environment.',
-    responsibilities: [
-      'Workshop organisation and maintenance',
-      'Customer tyre checks and consultations',
-      'Inventory sorting and management',
-      'Safety protocol adherence'
     ],
     type: 'work',
   },
