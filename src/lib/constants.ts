@@ -255,7 +255,7 @@ export const EXPERIENCE = [
     company: 'Tesco',
     location: 'Mold, Flintshire, Wales',
     period: 'Aug 2025 - Present',
-    description: 'Assisted with construction and landscaping projects including patios, fencing, and general repairs.',
+    description: 'Assisted with various store operations, ensuring a positive shopping experience for customers.',
     responsibilities: [
       'Stocking shelves and managing inventory',
       'Communicated effectively with customers',
